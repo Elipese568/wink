@@ -17,10 +17,10 @@ public:
         return _startTime <= timePoint && timePoint <= _endTime;
     }
 
-    constexpr TimePoint& start() const{
+    TimePoint start() const{
         return _startTime;
     }
-    constexpr TimePoint& end() const{
+    TimePoint end() const{
         return _endTime;
     }
 };

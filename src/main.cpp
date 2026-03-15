@@ -16,13 +16,14 @@ template<int Fps>
 class Wink{
 private:
     Point    winkPosition;
+    bool     isWinkReversing = false;
 
     bool     running = true;
 
     TimeSpan<chrono::steady_clock::time_point> winkTimeSpan;
     mt19937  rg;
 
-    chrono::seconds kNextWinkTimeIntervalRange = 5s;
+    chrono::seconds kNextWinkTimeIntervalRange = 1s;
 public:
     Wink() : winkPosition{0,0}, 
              winkTimeSpan{
@@ -39,15 +40,32 @@ public:
     }
 
     void tick() {
-        gotoxy(winkPosition);
-        if(winkTimeSpan.contains(chrono::steady_clock::now()))
-            puts(">v-");
+        gotoxy(0,0);
+        if(isWinkReversing)
+            winkPosition.x--;
         else
+            winkPosition.x++;
+
+        if(isWinkReversing){
+            if(winkPosition.x <= 1) isWinkReversing = false;
+        }
+        else if(winkPosition.x >= 20) isWinkReversing = true;
+        
+        cout << "                      " << flush;
+        
+        gotoxy(winkPosition);
+        if(winkTimeSpan.contains(chrono::steady_clock::now())){
+            puts(">v-");
+        }
+        else{
+            if(chrono::steady_clock::now() >= winkTimeSpan.end())
+                generateNextWinkTime();
             puts("ovo");
+        }
     }
 
     void waitFrame() {
-        this_thread::sleep_for(1s / Fps);
+        this_thread::sleep_for(1000ms / Fps);
     }
 
     void start(){
@@ -65,7 +83,7 @@ public:
     }
 };
 
-Wink<20> app;
+Wink<5> app;
 
 void __cdecl endSignal(int sig){
     app.end();

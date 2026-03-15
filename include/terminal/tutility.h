@@ -25,8 +25,8 @@ void mainBuffer() {
 
 void gotoxy(int x, int y) {
     cout << esc << '['
-        << x << ';'
-        << y << 'H';
+        << y << ';'
+        << x << 'H';
 }
 
 void gotoxy(const Point& point){

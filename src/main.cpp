@@ -8,15 +8,10 @@
 
 using namespace std;
 
-bool running = true;
-
-void __cdecl endSignal(int sig){
-    running = false;
-}
-
 class Wink{
 private:
     Point winkPosition;
+    bool running = true;
 public:
     Wink() : winkPosition{0,0} {}
 
@@ -24,18 +19,31 @@ public:
         gotoxy(winkPosition);
         puts(">v-");
     }
+
+    void start(){
+        running = true;
+
+        while(running){
+            tick();
+        }
+    }
+
+    void end(){
+        running = false;
+    }
 };
+
+Wink app;
+
+void __cdecl endSignal(int sig){
+    app.end();
+}
 
 int main(){
     altBuffer();
-
     signal(SIGINT, endSignal);
 
-    auto app = Wink();
-
-    while(running){
-        app.tick();
-    }
+    app.start();
 
     mainBuffer();
     return 0;

@@ -38,8 +38,11 @@ public:
         
         winkTimeSpan = TimeSpan(nextWinkTp, endWinkTp);
     }
+    void updatePosisiton(){
+        
+    }
 
-    void tick() {
+    void tick(int frame) {
         gotoxy(0,0);
         if(isWinkReversing)
             winkPosition.x--;
@@ -71,8 +74,10 @@ public:
     void start(){
         running = true;
         generateNextWinkTime();
+
+        int frame = 0;
         while(running){
-            tick();
+            tick(frame);
 
             waitFrame();
         }
@@ -83,7 +88,7 @@ public:
     }
 };
 
-Wink<5> app;
+Wink<120> app;
 
 void __cdecl endSignal(int sig){
     app.end();

@@ -38,11 +38,8 @@ public:
         
         winkTimeSpan = TimeSpan(nextWinkTp, endWinkTp);
     }
+    
     void updatePosisiton(){
-        
-    }
-
-    void tick(int frame) {
         gotoxy(0,0);
         if(isWinkReversing)
             winkPosition.x--;
@@ -53,10 +50,11 @@ public:
             if(winkPosition.x <= 1) isWinkReversing = false;
         }
         else if(winkPosition.x >= 20) isWinkReversing = true;
-        
-        cout << "                      " << flush;
-        
+    }
+
+    void putWink(){
         gotoxy(winkPosition);
+
         if(winkTimeSpan.contains(chrono::steady_clock::now())){
             puts(">v-");
         }
@@ -65,6 +63,16 @@ public:
                 generateNextWinkTime();
             puts("ovo");
         }
+    }
+
+    void clearWink(){
+        fillch(' ', winkPosition, 3);
+    }
+
+    void tick(int frame) {
+        clearWink();
+        updatePosisiton();
+        putWink();
     }
 
     void waitFrame() {
@@ -88,18 +96,23 @@ public:
     }
 };
 
-Wink<120> app;
+Wink<5> app;
 
 void __cdecl endSignal(int sig){
     app.end();
 }
 
 int main(){
+    /* Screen */
     altBuffer();
+    hideCursor();
     signal(SIGINT, endSignal);
 
+    /* Main Program */
     app.start();
 
+    /* Exit */
+    showCursor();
     mainBuffer();
     return 0;
 }

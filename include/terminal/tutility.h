@@ -23,10 +23,25 @@ void mainBuffer() {
     cout << esc << "[?1049l" << flush;
 }
 
+void showCursor(){
+    cout << esc << "[?25h" << flush;
+}
+
+void hideCursor(){
+    cout << esc << "[?25l" << flush;
+}
+
 void gotoxy(int x, int y) {
     cout << esc << '['
         << y << ';'
         << x << 'H';
+}
+
+void fillch(char ch, const Point& point, int length){
+    for(int i = point.x; i < point.x + length; i++){
+        gotoxy(i,point.y);
+        putchar(ch);
+    }
 }
 
 void gotoxy(const Point& point){

@@ -8,7 +8,7 @@ using std::flush;
 
 typedef decltype(cout) cout_t;
 
-cout_t & __cdecl esc(
+cout_t& esc(
     cout_t& stream
 ) {
     stream.put(stream.widen('\x1b'));

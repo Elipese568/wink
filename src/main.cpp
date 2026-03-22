@@ -3,10 +3,13 @@
 #include <thread>
 #include <csignal>
 #include <random>
+#include <sys/ioctl.h>
 
-#include <terminal/tutility.h>
+#include <tutility.h>
 #include <graphic.h>
 #include <TimeSpan.hpp>
+#include <global.h>
+#include <unistd.h>
 
 #define invoke(t) t()()
 
@@ -98,7 +101,7 @@ public:
 
 Wink<5> app;
 
-void __cdecl endSignal(int sig){
+void CBCALL endSignal(int sig){
     app.end();
 }
 
@@ -106,7 +109,11 @@ int main(){
     /* Screen */
     altBuffer();
     hideCursor();
-    signal(SIGINT, endSignal);
+    
+    winsize tsize;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &tsize);
+    gotoxy(0, tsize.ws_row - 1);
+    cout << tsize.ws_row << "x" << tsize.ws_col << flush;
 
     /* Main Program */
     app.start();
